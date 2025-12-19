@@ -1,185 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Proelium Fatale</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Memory</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  color: white;
-  font-family: monospace;
-  overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #eaeaea;
+    font-family: "Special Elite", monospace;
+    height: 100%;
+    overflow: hidden;
 }
 
-#stage {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+/* Background */
+#bg {
+    position: fixed;
+    inset: 0;
+    background: url('background.jpg') center / cover no-repeat;
+    opacity: 0.12;
+    animation: bgFlicker 6s infinite;
+    z-index: 1;
 }
 
-.hidden { display: none; }
+@keyframes bgFlicker {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.15; }
+}
 
-/* INPUT */
+/* Noise */
+#noise {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    animation: noiseMove 0.25s infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes noiseMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-2px); }
+}
+
+/* Center container */
+#container {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+/* Input */
 #passwordBox {
-  background: black;
-  border: 1px solid white;
-  color: white;
-  padding: 12px 20px;
-  font-size: 18px;
-  outline: none;
-  animation: glitchBox 3s infinite;
+    background: transparent;
+    border: 1px solid #888;
+    color: #fff;
+    padding: 14px;
+    width: 320px;
+    font-size: 18px;
+    outline: none;
+    animation: violentGlitch 2s infinite;
 }
 
-@keyframes glitchBox {
-  0% { transform: none; }
-  10% { transform: translate(-2px,2px); }
-  20% { transform: translate(3px,-1px); }
-  30% { transform: translate(-4px,1px); }
-  40% { transform: translate(2px,-3px); }
-  50% { transform: translate(-6px,2px); }
-  60% { transform: translate(5px,-2px); }
-  70% { transform: translate(-3px,3px); }
-  80% { transform: translate(4px,-4px); }
-  100% { transform: none; }
+@keyframes violentGlitch {
+    0% { transform: translate(0); }
+    10% { transform: translate(-3px, 2px); }
+    20% { transform: translate(3px, -2px); }
+    30% { transform: translate(-4px, 1px); }
+    40% { transform: translate(4px, -1px); }
+    50% { transform: translate(0); }
 }
 
-/* TEXT */
-#text {
-  max-width: 80%;
-  font-size: 18px;
-  line-height: 1.6;
+/* Lore text */
+#lore {
+    display: none;
+    max-width: 800px;
+    line-height: 1.8;
+    font-size: 18px;
+    animation: fadeIn 3s forwards;
 }
 
-/* ERASE */
-.erase {
-  animation: erase 0.8s steps(5) forwards;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-@keyframes erase {
-  0% { opacity: 1; filter: blur(0); }
-  100% { opacity: 0; filter: blur(12px); }
+/* Countdown */
+#countdown {
+    display: none;
+    margin-top: 30px;
+    font-size: 22px;
+    color: #ff4444;
+    animation: flickerText 1s infinite;
 }
 
-/* SCREEN TEAR */
-.tear {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: rgba(255,255,255,0.08);
-  mix-blend-mode: difference;
-  animation: tearMove 0.15s linear infinite;
-  z-index: 999;
+@keyframes flickerText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Destruction effects */
+#tear, #crack {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#tear {
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,0.1),
+        rgba(255,255,255,0.1) 2px,
+        transparent 2px,
+        transparent 6px
+    );
+    animation: tearMove 0.2s infinite;
 }
 
 @keyframes tearMove {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(-40px); }
-  100% { transform: translateX(40px); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-20px); }
 }
 
-/* GLASS */
-#glass {
-  position: fixed;
-  inset: 0;
-  background: url('glass-crack.png') center/cover no-repeat;
-  opacity: 0;
-  z-index: 1000;
-  pointer-events: none;
-}
-
-.freeze {
-  animation: none !important;
-  filter: contrast(1.4) brightness(0.8);
+#crack {
+    background: url('crack.png') center / cover no-repeat;
+    opacity: 0.9;
 }
 </style>
 </head>
+
 <body>
 
-<div id="stage">
-  <input id="passwordBox" placeholder="ENTER MEMORY" />
-  <div id="text" class="hidden"></div>
+<div id="bg"></div>
+<div id="noise"></div>
+
+<div id="container">
+
+    <input id="passwordBox" placeholder="ENTER PASSWORD">
+
+    <div id="lore">
+        <p>
+        in the end.. we are humans, humans cannot live without interaction with others.
+        Its a very important aspect in life to make one as lively as possible.
+        Humanity with good hearts will be able to change those broken and empty hearts,
+        those who has lost their memories, their spark of hope.. everything.
+        </p>
+
+        <p>
+        Determination from good Humanity will always be able to help and ignite the hope
+        of those who has lost it, holding their hands tight together.. out of the darkness.
+        </p>
+
+        <p>
+        Lastly Dream.. dream is such a very important aspect too in life, without a dream,
+        what does one life mean? What is life if one cannot have nor reach their dreams
+        with their own hands?
+        </p>
+
+        <p>
+        Having a dream is important, chasing it ambitiously is important, but you have to
+        care to your surroundings too without forgetting them all by your side.
+        </p>
+
+        <p>
+        Dont Forget, You Are Not Alone In This World, There's Those Who Are Willingly To Help
+        and Care For You.
+        </p>
+
+        <p>
+        As Hollow, As Empty you are..
+        </p>
+
+        <p><b>You are still a human, you matter.</b></p>
+    </div>
+
+    <div id="countdown">This Memory Will Fade In 10...</div>
+
 </div>
 
-<div id="glass"></div>
+<div id="tear"></div>
+<div id="crack"></div>
 
 <script>
-const PASSWORD = "Humanity Heart and Dream"; 
-
 const input = document.getElementById("passwordBox");
-const text = document.getElementById("text");
-const stage = document.getElementById("stage");
+const lore = document.getElementById("lore");
+const countdown = document.getElementById("countdown");
 
 input.addEventListener("keydown", e => {
-  if(e.key === "Enter"){
-    if(input.value === PASSWORD){
-      input.classList.add("hidden");
-      startLore();
-    } else {
-      input.value = "";
+    if (e.key === "Enter") {
+        if (input.value.trim() === "Humanity Heart and Dream") {
+            input.style.display = "none";
+            lore.style.display = "block";
+
+            setTimeout(startCountdown, 12000);
+        } else {
+            input.value = "";
+        }
     }
-  }
 });
 
-function startLore(){
-  text.classList.remove("hidden");
-  text.innerHTML = `THE MEMORY WAS NEVER YOURS.<br><br>IT WAS ONLY BORROWED.`;
+function startCountdown() {
+    countdown.style.display = "block";
+    let time = 10;
 
-  setTimeout(startCountdown, 12000);
+    const timer = setInterval(() => {
+        countdown.textContent = `This Memory Will Fade In ${time}...`;
+        time--;
+
+        if (time < 0) {
+            clearInterval(timer);
+            destroyPage();
+        }
+    }, 1000);
 }
 
-function startCountdown(){
-  let count = 10;
-  const timer = setInterval(() => {
-    text.innerText = `This Memory Will Fade In ${count}...`;
-    count--;
+function destroyPage() {
+    document.getElementById("tear").style.display = "block";
+    document.getElementById("crack").style.display = "block";
 
-    if(count < 0){
-      clearInterval(timer);
-      endSequence();
-    }
-  }, 1000);
-}
+    lore.style.animation = "none";
+    lore.style.opacity = 0;
+    countdown.style.opacity = 0;
 
-function endSequence(){
-  stage.classList.add("erase");
-  setTimeout(startTearing, 1200);
-}
-
-function startTearing(){
-  for(let i=0;i<12;i++){
-    const t = document.createElement("div");
-    t.className = "tear";
-    t.style.top = Math.random()*100 + "vh";
-    t.style.opacity = Math.random()*0.4 + 0.2;
-    document.body.appendChild(t);
-  }
-
-  let shake = setInterval(()=>{
-    document.body.style.transform =
-      `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)`;
-  }, 50);
-
-  setTimeout(()=>{
-    document.getElementById("glass").style.opacity = 0.6;
-  }, 600);
-
-  setTimeout(()=>{
-    clearInterval(shake);
-    document.body.style.transform = "none";
-    document.body.classList.add("freeze");
-    console.log("THE MEMORY IS GONE.");
-  }, 2200);
+    setTimeout(() => {
+        document.body.innerHTML = "";
+        document.body.style.background = "#000";
+    }, 1500);
 }
 </script>
 
