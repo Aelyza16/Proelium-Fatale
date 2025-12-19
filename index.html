@@ -1,183 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Proelium Fatale</title>
 
 <style>
-:root {
-  --bg: #000;
-  --text: #e5e5e5;
-  --accent: #ff3b3b;
-}
-
-* { box-sizing: border-box; }
-
-body {
+html, body {
   margin: 0;
-  height: 100vh;
-  background: #000;
-  color: var(--text);
-  font-family: "Courier New", monospace;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  font-family: monospace;
   overflow: hidden;
 }
 
-/* background */
-.bg {
+#stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hidden { display: none; }
+
+/* INPUT */
+#passwordBox {
+  background: black;
+  border: 1px solid white;
+  color: white;
+  padding: 12px 20px;
+  font-size: 18px;
+  outline: none;
+  animation: glitchBox 3s infinite;
+}
+
+@keyframes glitchBox {
+  0% { transform: none; }
+  10% { transform: translate(-2px,2px); }
+  20% { transform: translate(3px,-1px); }
+  30% { transform: translate(-4px,1px); }
+  40% { transform: translate(2px,-3px); }
+  50% { transform: translate(-6px,2px); }
+  60% { transform: translate(5px,-2px); }
+  70% { transform: translate(-3px,3px); }
+  80% { transform: translate(4px,-4px); }
+  100% { transform: none; }
+}
+
+/* TEXT */
+#text {
+  max-width: 80%;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ERASE */
+.erase {
+  animation: erase 0.8s steps(5) forwards;
+}
+
+@keyframes erase {
+  0% { opacity: 1; filter: blur(0); }
+  100% { opacity: 0; filter: blur(12px); }
+}
+
+/* SCREEN TEAR */
+.tear {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  mix-blend-mode: difference;
+  animation: tearMove 0.15s linear infinite;
+  z-index: 999;
+}
+
+@keyframes tearMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-40px); }
+  100% { transform: translateX(40px); }
+}
+
+/* GLASS */
+#glass {
   position: fixed;
   inset: 0;
-  background: url('bg.jpg') center / cover no-repeat;
-  opacity: 0.25;
-  filter: grayscale(1) contrast(1.1);
-  animation: bgFlicker 6s infinite;
-  z-index: 0;
+  background: url('glass-crack.png') center/cover no-repeat;
+  opacity: 0;
+  z-index: 1000;
+  pointer-events: none;
 }
 
-@keyframes bgFlicker {
-  0%,100% { opacity: .22; }
-  50% { opacity: .3; }
-}
-
-/* main container */
-.container {
-  position: relative;
-  z-index: 2;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 40px;
-  text-align: center;
-}
-
-/* input */
-#pw {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.2);
-  color: var(--text);
-  padding: 14px 18px;
-  width: min(420px, 80vw);
-  font-size: 16px;
-  text-align: center;
-  outline: none;
-  animation: inputGlitch 5s infinite;
-}
-
-@keyframes inputGlitch {
-  0%,90% { transform:none; }
-  92% { transform: translateX(2px); }
-  94% { transform: translateX(-2px); }
-  96% { transform: skewX(2deg); }
-  100% { transform:none; }
-}
-
-/* lore */
-#lore {
-  display: none;
-  max-width: 900px;
-  line-height: 1.8;
-  font-size: 17px;
-  margin-top: 30px;
-}
-
-/* countdown */
-#countdown {
-  margin-top: 30px;
-  font-size: 18px;
-  color: var(--accent);
-  display: none;
-}
-
-/* violent glitch */
-.glitch {
-  animation: violentGlitch .8s linear forwards;
-}
-
-@keyframes violentGlitch {
-  0% { filter:none; transform:none; }
-  20% { filter:hue-rotate(90deg) brightness(2); transform: translate(10px,-8px); }
-  40% { filter:hue-rotate(-120deg) contrast(2); transform: translate(-12px,6px); }
-  60% { filter:invert(1); transform: translate(6px,-4px); }
-  80% { filter:blur(6px); }
-  100% { opacity:0; }
+.freeze {
+  animation: none !important;
+  filter: contrast(1.4) brightness(0.8);
 }
 </style>
 </head>
-
 <body>
-<div class="bg"></div>
 
-<div class="container" id="main">
-  <input id="pw" type="text" placeholder="ENTER THE FINAL WORDS" autocomplete="off">
-
-  <div id="lore">
-    <p>
-      in the end.. we are humans, humans cannot live without interaction with others. Its a very important aspect in life to make one as lively as possible. Humanity with good hearts will be able to change those broken and empty hearts, those who has lost their memories, their spark of hope.. everything. Determination from good Humanity will always be able to help and ignite the hope of those who has lost it, holding their hands tight together.. out of the darkness.
-    </p>
-
-    <p>
-      Lastly Dream.. dream is such a very important aspect too in life, without a dream, what does one life mean? What is life if one cannot have nor reach their dreams with their own hands? Having a dream is important, chasing it ambitiously is important, but you have to care to your surroundings too without forgetting them all by your side.
-    </p>
-
-    <p>
-      Dont Forget, You Are Not Alone In This World, There's Those Who Are Willingly To Help and Care For You.
-    </p>
-
-    <p>
-      As Hollow, As Empty you are..<br>
-      <b>You are still a human, you matter.</b>
-    </p>
-  </div>
-
-  <div id="countdown"></div>
+<div id="stage">
+  <input id="passwordBox" placeholder="ENTER MEMORY" />
+  <div id="text" class="hidden"></div>
 </div>
 
-<script>
-const input = document.getElementById("pw");
-const lore = document.getElementById("lore");
-const countdown = document.getElementById("countdown");
-const main = document.getElementById("main");
+<div id="glass"></div>
 
-if (sessionStorage.getItem("ended")) {
-  main.innerHTML = "";
-}
+<script>
+const PASSWORD = "Humanity Heart and Dream"; 
+
+const input = document.getElementById("passwordBox");
+const text = document.getElementById("text");
+const stage = document.getElementById("stage");
 
 input.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    if (input.value.trim() === "Humanity Heart and Dream") {
-      input.style.display = "none";
-      lore.style.display = "block";
-      startCountdown();
+  if(e.key === "Enter"){
+    if(input.value === PASSWORD){
+      input.classList.add("hidden");
+      startLore();
+    } else {
+      input.value = "";
     }
   }
 });
 
-function startCountdown() {
-  let time = 10;
-  countdown.style.display = "block";
-  countdown.textContent = `This Memory Will Fade In ${time}...`;
+function startLore(){
+  text.classList.remove("hidden");
+  text.innerHTML = `THE MEMORY WAS NEVER YOURS.<br><br>IT WAS ONLY BORROWED.`;
 
+  setTimeout(startCountdown, 12000);
+}
+
+function startCountdown(){
+  let count = 10;
   const timer = setInterval(() => {
-    time--;
-    countdown.textContent = `This Memory Will Fade In ${time}...`;
+    text.innerText = `This Memory Will Fade In ${count}...`;
+    count--;
 
-    if (time <= 0) {
+    if(count < 0){
       clearInterval(timer);
-      destroy();
+      endSequence();
     }
   }, 1000);
 }
 
-function destroy() {
-  sessionStorage.setItem("ended", "true");
-  document.body.classList.add("glitch");
+function endSequence(){
+  stage.classList.add("erase");
+  setTimeout(startTearing, 1200);
+}
 
-  setTimeout(() => {
-    document.body.innerHTML = "";
-    document.body.style.background = "#000";
-  }, 900);
+function startTearing(){
+  for(let i=0;i<12;i++){
+    const t = document.createElement("div");
+    t.className = "tear";
+    t.style.top = Math.random()*100 + "vh";
+    t.style.opacity = Math.random()*0.4 + 0.2;
+    document.body.appendChild(t);
+  }
+
+  let shake = setInterval(()=>{
+    document.body.style.transform =
+      `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)`;
+  }, 50);
+
+  setTimeout(()=>{
+    document.getElementById("glass").style.opacity = 0.6;
+  }, 600);
+
+  setTimeout(()=>{
+    clearInterval(shake);
+    document.body.style.transform = "none";
+    document.body.classList.add("freeze");
+    console.log("THE MEMORY IS GONE.");
+  }, 2200);
 }
 </script>
 
