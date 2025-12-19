@@ -1,5 +1,185 @@
 <!DOCTYPE html>
-<html>
-<head><title>Proelium Fatale</title></head>
-<body></body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proelium Fatale</title>
+
+<style>
+:root {
+  --bg: #000;
+  --text: #e5e5e5;
+  --accent: #ff3b3b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: #000;
+  color: var(--text);
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+}
+
+/* background */
+.bg {
+  position: fixed;
+  inset: 0;
+  background: url('bg.jpg') center / cover no-repeat;
+  opacity: 0.25;
+  filter: grayscale(1) contrast(1.1);
+  animation: bgFlicker 6s infinite;
+  z-index: 0;
+}
+
+@keyframes bgFlicker {
+  0%,100% { opacity: .22; }
+  50% { opacity: .3; }
+}
+
+/* main container */
+.container {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+  text-align: center;
+}
+
+/* input */
+#pw {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.2);
+  color: var(--text);
+  padding: 14px 18px;
+  width: min(420px, 80vw);
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  animation: inputGlitch 5s infinite;
+}
+
+@keyframes inputGlitch {
+  0%,90% { transform:none; }
+  92% { transform: translateX(2px); }
+  94% { transform: translateX(-2px); }
+  96% { transform: skewX(2deg); }
+  100% { transform:none; }
+}
+
+/* lore */
+#lore {
+  display: none;
+  max-width: 900px;
+  line-height: 1.8;
+  font-size: 17px;
+  margin-top: 30px;
+}
+
+/* countdown */
+#countdown {
+  margin-top: 30px;
+  font-size: 18px;
+  color: var(--accent);
+  display: none;
+}
+
+/* violent glitch */
+.glitch {
+  animation: violentGlitch .8s linear forwards;
+}
+
+@keyframes violentGlitch {
+  0% { filter:none; transform:none; }
+  20% { filter:hue-rotate(90deg) brightness(2); transform: translate(10px,-8px); }
+  40% { filter:hue-rotate(-120deg) contrast(2); transform: translate(-12px,6px); }
+  60% { filter:invert(1); transform: translate(6px,-4px); }
+  80% { filter:blur(6px); }
+  100% { opacity:0; }
+}
+</style>
+</head>
+
+<body>
+<div class="bg"></div>
+
+<div class="container" id="main">
+  <input id="pw" type="text" placeholder="ENTER THE FINAL WORDS" autocomplete="off">
+
+  <div id="lore">
+    <p>
+      in the end.. we are humans, humans cannot live without interaction with others. Its a very important aspect in life to make one as lively as possible. Humanity with good hearts will be able to change those broken and empty hearts, those who has lost their memories, their spark of hope.. everything. Determination from good Humanity will always be able to help and ignite the hope of those who has lost it, holding their hands tight together.. out of the darkness.
+    </p>
+
+    <p>
+      Lastly Dream.. dream is such a very important aspect too in life, without a dream, what does one life mean? What is life if one cannot have nor reach their dreams with their own hands? Having a dream is important, chasing it ambitiously is important, but you have to care to your surroundings too without forgetting them all by your side.
+    </p>
+
+    <p>
+      Dont Forget, You Are Not Alone In This World, There's Those Who Are Willingly To Help and Care For You.
+    </p>
+
+    <p>
+      As Hollow, As Empty you are..<br>
+      <b>You are still a human, you matter.</b>
+    </p>
+  </div>
+
+  <div id="countdown"></div>
+</div>
+
+<script>
+const input = document.getElementById("pw");
+const lore = document.getElementById("lore");
+const countdown = document.getElementById("countdown");
+const main = document.getElementById("main");
+
+if (sessionStorage.getItem("ended")) {
+  main.innerHTML = "";
+}
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    if (input.value.trim() === "Humanity Heart and Dream") {
+      input.style.display = "none";
+      lore.style.display = "block";
+      startCountdown();
+    }
+  }
+});
+
+function startCountdown() {
+  let time = 10;
+  countdown.style.display = "block";
+  countdown.textContent = `This Memory Will Fade In ${time}...`;
+
+  const timer = setInterval(() => {
+    time--;
+    countdown.textContent = `This Memory Will Fade In ${time}...`;
+
+    if (time <= 0) {
+      clearInterval(timer);
+      destroy();
+    }
+  }, 1000);
+}
+
+function destroy() {
+  sessionStorage.setItem("ended", "true");
+  document.body.classList.add("glitch");
+
+  setTimeout(() => {
+    document.body.innerHTML = "";
+    document.body.style.background = "#000";
+  }, 900);
+}
+</script>
+
+</body>
 </html>
